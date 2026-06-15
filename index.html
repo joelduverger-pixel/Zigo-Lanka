@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zigo Lanka</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f766e">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>🏝️ Zigo Lanka</h1>
+  <p>Sri Lanka • 14 → 28 juillet</p>
+</header>
+
+<main>
+
+
+<section class="bloc">
+  <h2>🏆 Classement général</h2>
+  <div id="classement">Chargement...</div>
+</section>
+
+  <section class="bloc">
+    <h2>📜 Historique</h2>
+    <div id="historique">Chargement...</div>
+  </section>
+
+<section class="bloc">
+  <h2>🗺️ Parcours Zigo Lanka</h2>
+  <div id="calendrier">Chargement...</div>
+</section>
+
+  <section class="bloc">
+    <button id="adminBtn">🔒 Administration</button>
+
+    <div id="admin" class="cache">
+      <input type="password" id="code" placeholder="Code animateur">
+      <button id="ouvrirAdmin">Ouvrir</button>
+
+      <div id="zoneAdmin" class="cache">
+        <select id="participant"></select>
+
+        <div class="rapides">
+          <button class="plus" data-v="5">+5</button>
+          <button class="plus" data-v="10">+10</button>
+          <button class="plus" data-v="15">+15</button>
+          <button class="plus" data-v="30">+30</button>
+          <button class="plus" data-v="60">+60</button>
+        </div>
+
+        <input type="number" id="minutes" placeholder="Minutes">
+        <input type="text" id="motif" placeholder="Motif">
+
+        <button id="ajouter">Ajouter</button>
+        <div id="message"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
