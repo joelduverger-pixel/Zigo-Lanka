@@ -1,11 +1,13 @@
-const CACHE = "zigo-lanka-v1";
+const CACHE = "zigo-lanka-v2";
 
 const fichiers = [
   "./",
   "./index.html",
   "./style.css",
   "./app.js",
-  "./manifest.json"
+  "./manifest.json",
+  "./icon-192.png",
+  "./icon-512.png"
 ];
 
 self.addEventListener("install", event => {
@@ -16,8 +18,15 @@ self.addEventListener("install", event => {
 });
 
 self.addEventListener("fetch", event => {
+
+  // Ne pas mettre en cache les appels API
+  if (event.request.url.includes("script.google.com")) {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request)
       .then(response => response || fetch(event.request))
   );
+
 });
