@@ -7,40 +7,68 @@ async function chargerDonnees() {
     const response = await fetch(API);
     const data = await response.json();
 
+    // Sauvegarde locale pour le mode hors connexion
+    localStorage.setItem("zigoData", JSON.stringify(data));
+
     participants = data.participants || [];
     const historique = data.historique || [];
+    const missions = data.missions || [];
     const calendrier = data.calendrier || [];
 
     afficherClassement();
     afficherHistorique(historique);
+    afficherMissions(missions);
     afficherCalendrier(calendrier);
     remplirParticipants();
 
   } catch (e) {
-    alert("Erreur API : " + e.message);
+
     console.error(e);
 
-    document.getElementById("classement").innerHTML =
-      "❌ Erreur de connexion";
+    // Mode hors connexion
+    const sauvegarde = localStorage.getItem("zigoData");
 
-    document.getElementById("historique").innerHTML =
-      "❌ Erreur de connexion";
+    if (sauvegarde) {
 
-    const cal = document.getElementById("calendrier");
-    if (cal) {
-      cal.innerHTML = "❌ Erreur de connexion";
+      const data = JSON.parse(sauvegarde);
+
+      participants = data.participants || [];
+      const historique = data.historique || [];
+      const missions = data.missions || [];
+      const calendrier = data.calendrier || [];
+
+      afficherClassement();
+      afficherHistorique(historique);
+      afficherMissions(missions);
+      afficherCalendrier(calendrier);
+      remplirParticipants();
+
+    } else {
+
+      document.getElementById("classement").innerHTML =
+        "❌ Erreur de connexion";
+
+      document.getElementById("historique").innerHTML =
+        "❌ Erreur de connexion";
+
+      const mis = document.getElementById("missions");
+      if (mis) mis.innerHTML = "❌ Erreur de connexion";
+
+      const cal = document.getElementById("calendrier");
+      if (cal) cal.innerHTML = "❌ Erreur de connexion";
     }
   }
 }
 
 function afficherClassement() {
+
   const zone = document.getElementById("classement");
+
+  if (!zone) return;
 
   let liste = [...participants];
 
-  if (liste.length > 0) {
-    liste.shift(); // enlève l'en-tête
-  }
+  if (liste.length > 0) liste.shift();
 
   liste.sort((a, b) => Number(b[1]) - Number(a[1]));
 
@@ -57,33 +85,20 @@ function afficherClassement() {
 }
 
 function afficherHistorique(historique) {
+
   const zone = document.getElementById("historique");
+
+  if (!zone) return;
 
   let liste = [...historique];
 
-  if (liste.length > 0) {
-    liste.shift();
-  }
+  if (liste.length > 0) liste.shift();
 
   liste.reverse();
 
   zone.innerHTML = "";
 
-  if (liste.length === 0) {
-    zone.innerHTML = "<p>Aucun événement.</p>";
-    return;
-  }
-
   liste.slice(0, 20).forEach(h => {
-
-    const date = new Date(h[0]);
-
-const heure = date.toLocaleString("fr-FR", {
-  day: "2-digit",
-  month: "2-digit",
-  hour: "2-digit",
-  minute: "2-digit"
-});
 
     zone.innerHTML += `
       <div class="carte">
@@ -93,33 +108,68 @@ const heure = date.toLocaleString("fr-FR", {
         </div>
 
         <div style="text-align:right;">
-          +${h[3]} min<br>
-          <small>${heure}</small>
+          +${h[3]} min
         </div>
       </div>
     `;
   });
 }
 
+function afficherMissions(missions) {
+
+  const zone = document.getElementById("missions");
+
+  if (!zone) return;
+
+  zone.innerHTML = "";
+
+  if (!missions || missions.length <= 1) {
+    zone.innerHTML = "<p>Aucune mission.</p>";
+    return;
+  }
+
+  const liste = missions.slice(1);
+
+  liste.forEach(m => {
+
+    const type = m[0] || "";
+    const mode = m[1] || "";
+    const nom = m[2] || "";
+    const valeur = m[3] || "";
+
+    // Ignore les lignes sans mission
+    if (!nom || nom.trim() === "") return;
+
+    zone.innerHTML += `
+      <div class="carte">
+        <div>
+          <strong>🎯 ${nom}</strong><br>
+          ${type} ${mode ? "• " + mode : ""}
+        </div>
+
+        <div style="text-align:right;">
+          ${valeur ? "+" + valeur + " min" : ""}
+        </div>
+      </div>
+    `;
+
+  });
+
+}
 function afficherCalendrier(calendrier) {
+
   const zone = document.getElementById("calendrier");
 
   if (!zone) return;
 
   let liste = [...calendrier];
 
-  if (liste.length > 0) {
-    liste.shift();
-  }
+  if (liste.length > 0) liste.shift();
 
   zone.innerHTML = "";
 
-  if (liste.length === 0) {
-    zone.innerHTML = "<p>Aucune étape.</p>";
-    return;
-  }
-
   liste.forEach(etape => {
+
     zone.innerHTML += `
       <div class="carte">
         <div>
@@ -136,15 +186,14 @@ function afficherCalendrier(calendrier) {
 }
 
 function remplirParticipants() {
+
   const select = document.getElementById("participant");
 
   if (!select) return;
 
   let liste = [...participants];
 
-  if (liste.length > 0) {
-    liste.shift();
-  }
+  if (liste.length > 0) liste.shift();
 
   select.innerHTML = "";
 
@@ -155,13 +204,13 @@ function remplirParticipants() {
   });
 }
 
-// Bouton administration
+// Administration
 document.getElementById("adminBtn").addEventListener("click", () => {
   document.getElementById("admin").classList.toggle("cache");
 });
 
-// Vérification du code
 document.getElementById("ouvrirAdmin").addEventListener("click", () => {
+
   const code = document.getElementById("code").value;
 
   if (code === "Zigo26") {
@@ -211,6 +260,14 @@ document.getElementById("ajouter").addEventListener("click", async () => {
       document.getElementById("minutes").value = "";
       document.getElementById("motif").value = "";
 
+alert("App.js V4 chargé");
+
+chargerDonnees();
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
+}
+
       chargerDonnees();
 
     } else {
@@ -221,8 +278,6 @@ document.getElementById("ajouter").addEventListener("click", async () => {
     }
 
   } catch (e) {
-
-    alert("Erreur POST : " + e.message);
 
     document.getElementById("message").innerHTML =
       "❌ Impossible d'envoyer les données";
