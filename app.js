@@ -3,260 +3,341 @@ const API = "https://script.google.com/macros/s/AKfycbyczW7fHLjCuWGfRAPl0xx68JKf
 let participants = [];
 
 async function chargerDonnees() {
-  try {
-    const response = await fetch(API);
-    const data = await response.json();
 
-    // Sauvegarde locale pour le mode hors connexion
-    localStorage.setItem("zigoData", JSON.stringify(data));
+try {
 
-    participants = data.participants || [];
-    const historique = data.historique || [];
-    const missions = data.missions || [];
-    const calendrier = data.calendrier || [];
+```
+const response = await fetch(API);
+const data = await response.json();
 
-    afficherClassement();
-    afficherHistorique(historique);
-    afficherMissions(missions);
-    afficherCalendrier(calendrier);
-    remplirParticipants();
+// Sauvegarde locale
+localStorage.setItem("zigoData", JSON.stringify(data));
 
-  } catch (e) {
+participants = data.participants || [];
 
-    console.error(e);
+const historique = data.historique || [];
+const missions = data.missions || [];
+const calendrier = data.calendrier || [];
 
-    // Mode hors connexion
-    const sauvegarde = localStorage.getItem("zigoData");
+afficherClassement();
+afficherHistorique(historique);
+afficherMissions(missions);
+afficherCalendrier(calendrier);
+remplirParticipants();
+```
 
-    if (sauvegarde) {
+} catch (e) {
 
-      const data = JSON.parse(sauvegarde);
+```
+console.error("Erreur API :", e);
 
-      participants = data.participants || [];
-      const historique = data.historique || [];
-      const missions = data.missions || [];
-      const calendrier = data.calendrier || [];
+const sauvegarde = localStorage.getItem("zigoData");
 
-      afficherClassement();
-      afficherHistorique(historique);
-      afficherMissions(missions);
-      afficherCalendrier(calendrier);
-      remplirParticipants();
+if (sauvegarde) {
 
-    } else {
+  const data = JSON.parse(sauvegarde);
 
-      document.getElementById("classement").innerHTML =
-        "❌ Erreur de connexion";
+  participants = data.participants || [];
 
-      document.getElementById("historique").innerHTML =
-        "❌ Erreur de connexion";
+  afficherClassement();
+  afficherHistorique(data.historique || []);
+  afficherMissions(data.missions || []);
+  afficherCalendrier(data.calendrier || []);
+  remplirParticipants();
 
-      const mis = document.getElementById("missions");
-      if (mis) mis.innerHTML = "❌ Erreur de connexion";
+} else {
 
-      const cal = document.getElementById("calendrier");
-      if (cal) cal.innerHTML = "❌ Erreur de connexion";
-    }
-  }
+  const classement = document.getElementById("classement");
+  const historique = document.getElementById("historique");
+  const missions = document.getElementById("missions");
+  const calendrier = document.getElementById("calendrier");
+
+  if (classement) classement.innerHTML = "❌ Erreur de connexion";
+  if (historique) historique.innerHTML = "❌ Erreur de connexion";
+  if (missions) missions.innerHTML = "❌ Erreur de connexion";
+  if (calendrier) calendrier.innerHTML = "❌ Erreur de connexion";
+
+}
+```
+
+}
 }
 
 function afficherClassement() {
 
-  const zone = document.getElementById("classement");
+const zone = document.getElementById("classement");
 
-  if (!zone) return;
+if (!zone) return;
 
-  let liste = [...participants];
+let liste = [...participants];
 
-  if (liste.length > 0) liste.shift();
+if (liste.length > 0) liste.shift();
 
-  liste.sort((a, b) => Number(b[1]) - Number(a[1]));
+liste.sort((a, b) => Number(b[1]) - Number(a[1]));
 
-  zone.innerHTML = "";
+zone.innerHTML = "";
 
-  liste.forEach((p, index) => {
-    zone.innerHTML += `
-      <div class="carte">
-        <span>${index + 1}. ${p[0]}</span>
-        <strong>${p[1]} min</strong>
-      </div>
-    `;
-  });
+liste.forEach((p, index) => {
+
+```
+zone.innerHTML += `
+  <div class="carte">
+    <span>${index + 1}. ${p[0]}</span>
+    <strong>${p[1]} min</strong>
+  </div>
+`;
+```
+
+});
 }
 
 function afficherHistorique(historique) {
 
-  const zone = document.getElementById("historique");
+const zone = document.getElementById("historique");
 
-  if (!zone) return;
+if (!zone) return;
 
-  let liste = [...historique];
+let liste = [...historique];
 
-  if (liste.length > 0) liste.shift();
+if (liste.length > 0) liste.shift();
 
-  liste.reverse();
+liste.reverse();
 
-  zone.innerHTML = "";
+zone.innerHTML = "";
 
-  liste.slice(0, 20).forEach(h => {
+if (liste.length === 0) {
+zone.innerHTML = "Aucun événement";
+return;
+}
 
-    zone.innerHTML += `
-      <div class="carte">
-        <div>
-          <strong>${h[1]}</strong><br>
-          ${h[2]}
-        </div>
+liste.slice(0, 20).forEach(h => {
 
-        <div style="text-align:right;">
-          +${h[3]} min
-        </div>
-      </div>
-    `;
-  });
+```
+zone.innerHTML += `
+  <div class="carte">
+    <div>
+      <strong>${h[1]}</strong><br>
+      ${h[2]}
+    </div>
+
+    <div style="text-align:right;">
+      +${h[3]} min
+    </div>
+  </div>
+`;
+```
+
+});
 }
 
 function afficherMissions(missions) {
 
-  const zone = document.getElementById("missions");
+const zone = document.getElementById("missions");
 
-  if (!zone) {
-    alert("DIV missions introuvable");
-    return;
-  }
+if (!zone) return;
 
-  zone.innerHTML = "<h3>TEST MISSIONS</h3>";
+zone.innerHTML = "";
 
+if (!missions || missions.length <= 1) {
+zone.innerHTML = "Aucune mission";
+return;
 }
+
+const liste = missions.slice(1);
+
+liste.forEach(m => {
+
+```
+const type = m[0] || "";
+const mode = m[1] || "";
+const mission = m[2] || "";
+const valeur = m[3] || "";
+
+if (!mission) return;
+
+zone.innerHTML += `
+  <div class="carte">
+    <div>
+      <strong>${mission}</strong><br>
+      ${type} • ${mode}
+    </div>
+
+    <div style="text-align:right;">
+      +${valeur} min
+    </div>
+  </div>
+`;
+```
+
+});
+}
+
 function afficherCalendrier(calendrier) {
 
-  const zone = document.getElementById("calendrier");
+const zone = document.getElementById("calendrier");
 
-  if (!zone) return;
+if (!zone) return;
 
-  let liste = [...calendrier];
+let liste = [...calendrier];
 
-  if (liste.length > 0) liste.shift();
+if (liste.length > 0) liste.shift();
 
-  zone.innerHTML = "";
+zone.innerHTML = "";
 
-  liste.forEach(etape => {
+liste.forEach(etape => {
 
-    zone.innerHTML += `
-      <div class="carte">
-        <div>
-          <strong>${etape[0]}</strong><br>
-          📍 ${etape[1]}
-        </div>
+```
+zone.innerHTML += `
+  <div class="carte">
+    <div>
+      <strong>${etape[0]}</strong><br>
+      📍 ${etape[1]}
+    </div>
 
-        <div style="text-align:right;">
-          ${etape[2]}
-        </div>
-      </div>
-    `;
-  });
+    <div style="text-align:right;">
+      ${etape[2]}
+    </div>
+  </div>
+`;
+```
+
+});
 }
 
 function remplirParticipants() {
 
-  const select = document.getElementById("participant");
+const select = document.getElementById("participant");
 
-  if (!select) return;
+if (!select) return;
 
-  let liste = [...participants];
+let liste = [...participants];
 
-  if (liste.length > 0) liste.shift();
+if (liste.length > 0) liste.shift();
 
-  select.innerHTML = "";
+select.innerHTML = "";
 
-  liste.forEach(p => {
-    select.innerHTML += `
-      <option value="${p[0]}">${p[0]}</option>
-    `;
-  });
+liste.forEach(p => {
+
+```
+select.innerHTML += `
+  <option value="${p[0]}">${p[0]}</option>
+`;
+```
+
+});
 }
 
 // Administration
-document.getElementById("adminBtn").addEventListener("click", () => {
-  document.getElementById("admin").classList.toggle("cache");
+
+const adminBtn = document.getElementById("adminBtn");
+
+if (adminBtn) {
+
+adminBtn.addEventListener("click", () => {
+
+```
+document.getElementById("admin").classList.toggle("cache");
+```
+
 });
 
-document.getElementById("ouvrirAdmin").addEventListener("click", () => {
-
-  const code = document.getElementById("code").value;
-
-  if (code === "Zigo26") {
-    document.getElementById("zoneAdmin").classList.remove("cache");
-  } else {
-    alert("Code incorrect");
-  }
-});
-
-// Boutons rapides
-document.querySelectorAll(".plus").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.getElementById("minutes").value = btn.dataset.v;
-  });
-});
-
-// Ajouter des minutes
-document.getElementById("ajouter").addEventListener("click", async () => {
-
-  const nom = document.getElementById("participant").value;
-  const minutes = Number(document.getElementById("minutes").value);
-  const action = document.getElementById("motif").value;
-
-  if (!action) {
-    alert("Motif obligatoire");
-    return;
-  }
-
-  try {
-
-    const response = await fetch(API, {
-      method: "POST",
-      body: JSON.stringify({
-        nom,
-        minutes,
-        action
-      })
-    });
-
-    const result = await response.json();
-
-    if (result.success) {
-
-      document.getElementById("message").innerHTML =
-        "✅ Ajout enregistré";
-
-      document.getElementById("minutes").value = "";
-      document.getElementById("motif").value = "";
-
-chargerDonnees();
-
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
 }
 
-      chargerDonnees();
+const ouvrirAdmin = document.getElementById("ouvrirAdmin");
 
-    } else {
+if (ouvrirAdmin) {
 
-      document.getElementById("message").innerHTML =
-        "❌ Erreur";
+ouvrirAdmin.addEventListener("click", () => {
 
-    }
+```
+const code = document.getElementById("code").value;
 
-  } catch (e) {
+if (code === "Zigo26") {
+
+  document.getElementById("zoneAdmin").classList.remove("cache");
+
+} else {
+
+  alert("Code incorrect");
+
+}
+```
+
+});
+}
+
+document.querySelectorAll(".plus").forEach(btn => {
+
+btn.addEventListener("click", () => {
+
+```
+document.getElementById("minutes").value = btn.dataset.v;
+```
+
+});
+
+});
+
+const ajouterBtn = document.getElementById("ajouter");
+
+if (ajouterBtn) {
+
+ajouterBtn.addEventListener("click", async () => {
+
+```
+const nom = document.getElementById("participant").value;
+const minutes = Number(document.getElementById("minutes").value);
+const action = document.getElementById("motif").value;
+
+if (!action) {
+  alert("Motif obligatoire");
+  return;
+}
+
+try {
+
+  const response = await fetch(API, {
+    method: "POST",
+    body: JSON.stringify({
+      nom,
+      minutes,
+      action
+    })
+  });
+
+  const result = await response.json();
+
+  if (result.success) {
 
     document.getElementById("message").innerHTML =
-      "❌ Impossible d'envoyer les données";
+      "✅ Ajout enregistré";
+
+    document.getElementById("minutes").value = "";
+    document.getElementById("motif").value = "";
+
+    chargerDonnees();
+
+  } else {
+
+    document.getElementById("message").innerHTML =
+      "❌ Erreur";
 
   }
 
+} catch (e) {
+
+  document.getElementById("message").innerHTML =
+    "❌ Impossible d'envoyer les données";
+
+}
+```
+
 });
+
+}
 
 chargerDonnees();
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
+navigator.serviceWorker.register("service-worker.js");
 }
