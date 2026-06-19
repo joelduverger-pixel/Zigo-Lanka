@@ -260,8 +260,6 @@ document.getElementById("ajouter").addEventListener("click", async () => {
       document.getElementById("minutes").value = "";
       document.getElementById("motif").value = "";
 
-alert("App.js V4 chargé");
-
 chargerDonnees();
 
 if ("serviceWorker" in navigator) {
