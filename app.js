@@ -117,45 +117,14 @@ function afficherHistorique(historique) {
 
 function afficherMissions(missions) {
 
-  alert("Missions reçues : " + missions.length);
-  
   const zone = document.getElementById("missions");
 
-  if (!zone) return;
-
-  zone.innerHTML = "";
-
-  if (!missions || missions.length <= 1) {
-    zone.innerHTML = "<p>Aucune mission.</p>";
+  if (!zone) {
+    alert("DIV missions introuvable");
     return;
   }
 
-  const liste = missions.slice(1);
-
-  liste.forEach(m => {
-
-    const type = m[0] || "";
-    const mode = m[1] || "";
-    const nom = m[2] || "";
-    const valeur = m[3] || "";
-
-    // Ignore les lignes sans mission
-    if (!nom || nom.trim() === "") return;
-
-    zone.innerHTML += `
-      <div class="carte">
-        <div>
-          <strong>🎯 ${nom}</strong><br>
-          ${type} ${mode ? "• " + mode : ""}
-        </div>
-
-        <div style="text-align:right;">
-          ${valeur ? "+" + valeur + " min" : ""}
-        </div>
-      </div>
-    `;
-
-  });
+  zone.innerHTML = "<h3>TEST MISSIONS</h3>";
 
 }
 function afficherCalendrier(calendrier) {
