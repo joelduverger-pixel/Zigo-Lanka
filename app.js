@@ -117,6 +117,8 @@ function afficherHistorique(historique) {
 
 function afficherMissions(missions) {
 
+  alert("Missions reçues : " + missions.length);
+  
   const zone = document.getElementById("missions");
 
   if (!zone) return;
