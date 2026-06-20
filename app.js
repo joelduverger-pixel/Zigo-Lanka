@@ -18,10 +18,20 @@ const missions = data.missions || [];
 const calendrier = data.calendrier || [];
 
 afficherClassement();
+
+alert("Classement OK");
+
 afficherHistorique(historique);
+
+alert("Historique OK");
+
 afficherMissions(missions);
+
+alert("Missions OK");
+
 afficherCalendrier(calendrier);
-remplirParticipants();
+
+alert("Calendrier OK");
 ```
 
 } catch (e) {
