@@ -137,14 +137,31 @@ zone.innerHTML += `
 
 function afficherMissions(missions) {
 
-const zone = document.getElementById("missions");
-if (!zone) return;
+  const zone = document.getElementById("missions");
 
-zone.innerHTML = "";
+  if (!zone) return;
 
-if (!missions || missions.length <= 1) {
-zone.innerHTML = "Aucune mission";
-return;
+  zone.innerHTML = "";
+
+  if (!missions || missions.length <= 1) {
+    zone.innerHTML = "Aucune mission";
+    return;
+  }
+
+  const liste = missions.slice(1);
+
+  liste.forEach(m => {
+
+    if (!m[2]) return;
+
+    zone.innerHTML += `
+      <div class="carte">
+        <strong>${m[2]}</strong>
+      </div>
+    `;
+
+  });
+
 }
 
 const liste = missions.slice(1);
