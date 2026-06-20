@@ -13,11 +13,14 @@ const data = await response.json();
 localStorage.setItem("zigoData", JSON.stringify(data));
 
 participants = data.participants || [];
+const historique = data.historique || [];
+const missions = data.missions || [];
+const calendrier = data.calendrier || [];
 
 afficherClassement();
-afficherHistorique(data.historique || []);
-afficherMissions(data.missions || []);
-afficherCalendrier(data.calendrier || []);
+afficherHistorique(historique);
+afficherMissions(missions);
+afficherCalendrier(calendrier);
 remplirParticipants();
 ```
 
