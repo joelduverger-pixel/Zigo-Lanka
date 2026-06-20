@@ -132,15 +132,15 @@ zone.innerHTML += `
 
 function afficherMissions(missions) {
 
-const zone = document.getElementById("missions");
+  const zone = document.getElementById("missions");
 
-if (!zone) return;
+  if (!zone) return;
 
-zone.innerHTML = "";
+  zone.innerHTML = "";
 
-if (!missions || missions.length <= 1) {
-zone.innerHTML = "Aucune mission";
-return;
+  zone.innerHTML =
+    "Nombre de missions : " + missions.length;
+
 }
 
 const liste = missions.slice(1);
