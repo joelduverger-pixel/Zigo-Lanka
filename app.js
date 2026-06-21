@@ -134,12 +134,9 @@ function afficherMissions(missions) {
 
   if (!zone) return;
 
-  zone.innerHTML = "";
+  zone.innerHTML = "TEST";
 
-  if (!missions || missions.length <= 1) {
-    zone.innerHTML = "Aucune mission";
-    return;
-  }
+}
 
 function afficherMissions(missions) {
 
