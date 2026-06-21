@@ -19,19 +19,12 @@ const calendrier = data.calendrier || [];
 
 afficherClassement();
 
-alert("Classement OK");
-
 afficherHistorique(historique);
-
-alert("Historique OK");
 
 afficherMissions(missions);
 
-alert("Missions OK");
-
 afficherCalendrier(calendrier);
 
-alert("Calendrier OK");
 ```
 
 } catch (e) {
@@ -148,15 +141,40 @@ function afficherMissions(missions) {
     return;
   }
 
+function afficherMissions(missions) {
+
+  const zone = document.getElementById("missions");
+
+  if (!zone) return;
+
+  zone.innerHTML = "";
+
+  if (!missions || missions.length <= 1) {
+    zone.innerHTML = "Aucune mission";
+    return;
+  }
+
   const liste = missions.slice(1);
 
   liste.forEach(m => {
 
-    if (!m[2]) return;
+    const type = m[0] || "";
+    const mode = m[1] || "";
+    const mission = m[2] || "";
+    const valeur = m[3] || "";
+
+    if (!mission) return;
 
     zone.innerHTML += `
       <div class="carte">
-        <strong>${m[2]}</strong>
+        <div>
+          <strong>${mission}</strong><br>
+          ${type} • ${mode}
+        </div>
+
+        <div>
+          +${valeur} min
+        </div>
       </div>
     `;
 
