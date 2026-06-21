@@ -134,16 +134,6 @@ function afficherMissions(missions) {
 
   if (!zone) return;
 
-  zone.innerHTML = "TEST";
-
-}
-
-function afficherMissions(missions) {
-
-  const zone = document.getElementById("missions");
-
-  if (!zone) return;
-
   zone.innerHTML = "";
 
   if (!missions || missions.length <= 1) {
@@ -176,36 +166,6 @@ function afficherMissions(missions) {
     `;
 
   });
-
-}
-
-const liste = missions.slice(1);
-
-liste.forEach(m => {
-
-```
-const type = m[0] || "";
-const mode = m[1] || "";
-const mission = m[2] || "";
-const valeur = m[3] || "";
-
-if (!mission) return;
-
-zone.innerHTML += `
-  <div class="carte">
-    <div>
-      <strong>${mission}</strong><br>
-      ${type} • ${mode}
-    </div>
-
-    <div>
-      +${valeur} min
-    </div>
-  </div>
-`;
-```
-
-});
 
 }
 
